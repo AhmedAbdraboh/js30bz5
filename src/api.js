@@ -4,7 +4,8 @@ var send = require('send-data/json')
 var Buyers = require('./models/buyers')
 
 module.exports = {
-  create: create
+  create: create,
+  get: get
 }
 
 function create(req, res, opts, cb) {
@@ -28,4 +29,12 @@ function validateCreateBuyerBody(body, allowedParams) {
     allowedBody[element] = body[element]
   });
   return allowedBody;
+}
+
+function get(req, res, opts, cb) {
+  Buyers.get(opts.params.id, function (err, value) {
+    if (err) return cb(err)
+    let response = JSON.parse(value)
+    send(req, res, response)
+  })
 }
