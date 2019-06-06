@@ -6,7 +6,7 @@ var servertest = require('dg-servertest')
 var querystring = require('querystring')
 
 var buyers = require('./buyers.json')
-var server = require('../lib/server')()
+var server = require('../src/server')()
 
 tape('should add buyers', function (t) {
   map(buyers, 1, addBuyer, function (err) {
@@ -16,7 +16,7 @@ tape('should add buyers', function (t) {
 
   function addBuyer (buyer, cb) {
     var opts = { encoding: 'json', method: 'POST' }
-    var stream = servertest(server, '/buyers', opts, function (err, res) {
+    var stream = servertest(server, '/api/buyers', opts, function (err, res) {
       t.equal(res.statusCode, 201, 'correct statusCode')
       cb(err)
     })
@@ -27,7 +27,7 @@ tape('should add buyers', function (t) {
 
 tape('should not add invalid buyer', function (t) {
   var opts = { encoding: 'json', method: 'POST' }
-  var stream = servertest(server, '/buyers', opts, function (err, res) {
+  var stream = servertest(server, '/api/buyers', opts, function (err, res) {
     t.ifError(err, 'should not error')
     t.ok(res.statusCode >= 400, 'error statusCode')
     t.end()
@@ -44,7 +44,7 @@ tape('should get buyers', function (t) {
 
   function getBuyer (buyer, cb) {
     var opts = { encoding: 'json' }
-    servertest(server, '/buyers/' + buyer.id, opts, function (err, res) {
+    servertest(server, '/api/buyers/' + buyer.id, opts, function (err, res) {
       if (err) return cb(err)
       t.equal(res.statusCode, 200, 'correct statusCode')
       t.deepEqual(res.body, buyer, 'buyer should match')
@@ -73,7 +73,7 @@ tape('should route traffic', function (t) {
   })
 
   function routeTraffic (request, cb) {
-    var url = '/route?' + querystring.stringify(request)
+    var url = '/api/route?' + querystring.stringify(request)
     servertest(server, url, function (err, res) {
       if (err) return cb(err)
       t.equal(res.statusCode, 302, 'correct statusCode')
