@@ -19,7 +19,7 @@ var cors = Corsify({
 
 router.set('/api/buyers', { POST: api.create })
 router.set('/api/buyers/:id', { GET: api.get })
-
+router.set('/api/route', { GET: api.getRoute })
 
 module.exports = function createServer () {
   return http.createServer(cors(handler))
