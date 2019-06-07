@@ -46,13 +46,13 @@ function get (req, res, opts, cb) {
 }
 
 function getRoute (req, res, opts, cb) {
-  Buyers.getRoute(opts.query, function (err, value) {
+  Buyers.getRoute(req.id, opts.query, function (err, value) {
     if (err) return cb(err)
-    if (value.length) {
+    if (value) {
       return send(req, res, {
         statusCode: 302,
         headers: {
-          location: value[0]
+          location: value
         }
       })
     } else {
